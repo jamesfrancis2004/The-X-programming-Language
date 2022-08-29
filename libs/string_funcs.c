@@ -1,11 +1,5 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
+#include "string_funcs.h"
 
-
-
-
-//char* initialise_str(
 
 void add_str(char* dest_str, char* source_str, int*dest_length, int source_length, int* max_length) {
         if (*dest_length + source_length + 1 >= *max_length) {
@@ -17,9 +11,8 @@ void add_str(char* dest_str, char* source_str, int*dest_length, int source_lengt
         } else {
                 strncpy(&dest_str[*dest_length], source_str, source_length);
         }
-        *dest_length = *dest_length + source_length;
-
-        dest_length[*dest_length] = '\0';
+        *dest_length += source_length;
+        dest_str[*dest_length] = '\0';
 
 }
 

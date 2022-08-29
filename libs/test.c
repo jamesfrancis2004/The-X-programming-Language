@@ -1,18 +1,12 @@
-#include "string_funcs.c"
+#include "libraries.h"
 
 
 
 int main() {
-        int str_length = 5;
+        int str_length = 0;
         int str_max_length = 10;
-        char* str = malloc(sizeof(char) * 10);
-        strncpy(str, "hello", str_length + 1);
-        int str2_length = 5;
-        int str2_max_length = 10;
-        char* str2 = malloc(sizeof(char)*10);
-        strncpy(str2, "hello", str2_length + 1);
-        add_str(str, str2, &str_length, str2_length, &str_max_length);
-        printf("The value for str is %s", str);
-        printf("And max_length is %d\n", str_max_length);
+        char* str = malloc(str_max_length * sizeof(char));
+        add_str(str, "hello", &str_length, 5, &str_max_length);
+        add_str(str, str, &str_length, 5, &str_max_length);
 }
 

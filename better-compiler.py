@@ -167,7 +167,17 @@ class Parser:
     def declare_prex_variable(self, to_declare, var_type):
         string = "" 
         if (var_type == "String"):
-            print("Strings not currently supported")
+            variables = self.read_after_string()
+            self.args += f"{to_declare}_len = 0;\n"
+            for i in variables:
+                if (i[1] == "var"):
+                    self.args += f"add_str({to_declare}, {i[0]}, &{to_declare}_len, {i[0]}_len, &{to_declare}_max_length);\n"
+                elif (i[1] == "str"):
+                    self.args += f"add_str({to_declare}, {i[0]}, &{to_declare}_len, {i[2] - 1}, &{to_declare}_max_length);\n"
+            self.pos += 1
+
+            return self.parse()
+
         elif (var_type == "Int"):
             while (self.data[self.pos] != ";"):
                 string += self.data[self.pos]
@@ -627,28 +637,16 @@ class Parser:
 
         self.pos += 1
 
+        self.args += f"int {variable_name}_len = 0;\n"
+        self.args += f"int {variable_name}_max_length = 10;\n"
+        self.args += f"char* {variable_name} = malloc(sizeof(char) * {variable_name}_max_length);\n"
+        
         for i in variables:
             if (i[1] == "var"):
-                total_size += f"+ {i[0]}_len"
+                self.args += f"add_str({variable_name}, {i[0]}, &{variable_name}_len, {i[0]}_len, &{variable_name}_max_length);\n"
             elif (i[1] == "str"):
-                total_size += f"+ {i[2]}"
-        total_size += " + 1)"
+                self.args += f"add_str({variable_name}, {i[0]}, &{variable_name}_len, {i[2] - 1}, &{variable_name}_max_length);\n"
 
-        self.args += f"char* {variable_name} = malloc(sizeof(char) * {total_size});\n"
-
-        total_count = "0"
-
-        for i in variables:
-            if (i[1] == "var"):
-                self.args += f"strncpy(&{variable_name}[{total_count}], {i[0]}, {i[0]}_len);\n"
-                total_count += f"+ {i[0]}_len"
-            elif (i[1] == "str"):
-                self.args += f'strncpy(&{variable_name}[{total_count}], {i[0]}, {i[2] - 1});\n'
-                total_count += f"+ {i[2] - 1}"
-
-
-        self.args += f'int {variable_name}_len = {total_count};\n'
-        self.args += f"{variable_name}[{variable_name}_len] = '\\0';\n"
         
         
 
@@ -690,7 +688,7 @@ def open_file(filename):
     return data
 
 def run():
-    scaffold = """#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n int main() { """
+    scaffold = """#include "libs/libraries.h"\n int main() { """
     args = ""
     data = open_file(sys.argv[1])
     parser = Parser(data, 0, args)
