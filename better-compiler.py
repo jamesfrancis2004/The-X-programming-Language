@@ -22,6 +22,8 @@ class Parser:
                            "\n":0,
                            "\t":0,
                            }
+        self.equality_operators = {">": 0, "<": 0,
+                                   "=": 0}
         self.math_symbols = {"+": 0, "*": 0, "/": 0, "-":0,
                             "^":0, "|":0, "&":0, "<":0,
                             ">":0, " ":0,"\n":0, "\t":0,
@@ -138,6 +140,11 @@ class Parser:
             self.pos += 1
 
         return self.args
+
+    def read_after_bool(self):
+        var_found = False
+        pass
+        
 
     def perform_if(self):
         string = ""
@@ -439,6 +446,9 @@ class Parser:
                         if (self.variables[curr_variable][0] == "String"):
                             variables.append((curr_variable, "var"))
                             curr_variable = ""
+                        elif (self.variables[curr_variable][0] == "Int"):
+                            variables.append((curr_variable, "int"))
+                            curr_variable = ""
                         else:
                             print(f"Error: '{curr_variable}' is of type {self.variables[curr_variable][0]}. Incompatible")  
                             exit()
@@ -646,6 +656,8 @@ class Parser:
                 self.args += f"add_str({variable_name}, {i[0]}, &{variable_name}_len, {i[0]}_len, &{variable_name}_max_length);\n"
             elif (i[1] == "str"):
                 self.args += f"add_str({variable_name}, {i[0]}, &{variable_name}_len, {i[2] - 1}, &{variable_name}_max_length);\n"
+            elif (i[1] == "int"):
+                self.args += f"add_int_str({variable_name}, {i[0]}, &{variable_name}_len, &{variable_name}_max_length);\n"
 
         
         
