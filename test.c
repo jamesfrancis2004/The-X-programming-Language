@@ -9,6 +9,10 @@ int phrase_max_length = 10;
 char* phrase = malloc(sizeof(char) * phrase_max_length);
 add_str(phrase, "the name is ", &phrase_len, 12, &phrase_max_length);
 add_str(phrase, name, &phrase_len, name_len, &phrase_max_length);
+float age =  100.0;
+int number =  20;
+age =  number + age;
+printf("%f\n",age);
 for (int i = 0; i < phrase_len; ++i) {
 printf("the char is %c\n",phrase[i]);
 }
@@ -19,6 +23,4 @@ int count =  10;
 int other =  5;
 count =  count + other;
 printf("the value for count is %d\n",count);
-phrase_len = 0;
-add_str(phrase, phrase, &phrase_len, phrase_len, &phrase_max_length);
 }
