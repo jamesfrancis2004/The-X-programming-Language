@@ -1,11 +1,8 @@
 #include <stdio.h>
-void go_to_the_moon( int age, int thing) {
-int other = 100;
-}
-void next( int ouch, int name) {
-int next = 50;
-}
+#include <stdlib.h>
 void main() {
-int age = 18;
-printf("His name is James and he is %d years old\n",age);
-}
+int sum = 0;
+for (int i = 1; i < 10001; i += 1) {
+ sum = sum + i;
+ }printf("the value for sum is %d\n",sum);
+ }

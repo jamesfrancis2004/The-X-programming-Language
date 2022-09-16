@@ -2,7 +2,10 @@ class Println:
     def __init__(self):
         self.text = []
         self.variables = []
-        self.type_conversion = {"i32": "%d"}
+        self.type_conversion = {"i32": "%d", 
+                                "f32": "%f",
+                                "char[]": "%s",
+                                "char": "%c"}
 
     def update_variable(self, variable):
         self.text.append(self.type_conversion[variable.type])

@@ -1,10 +1,12 @@
-class i32:
+
+
+
+class f32:
     def __init__(self, name, declaration_text):
         self.name = name
         self.declaration_text = [declaration_text]
-        self.type = "i32"
+        self.type = "f32"
         self.index = 0
-        print(self.declaration_text)
 
 
     def redeclare_variable(self, declaration_text):
@@ -14,13 +16,15 @@ class i32:
         before_index = self.index
         dec_text = self.declaration_text[self.index]
         self.index += 1
+        
         if self.declaration_text == None:
-            return f"int {self.name}"
+            return f"float {self.name}"
         else:
             if before_index == 0:
-                return f"int {self.name} = {dec_text};\n"
+                return f"float {self.name} = {dec_text};\n"
             else:
                 return f"{self.name} = {dec_text};\n"
 
-    
 
+
+ 
