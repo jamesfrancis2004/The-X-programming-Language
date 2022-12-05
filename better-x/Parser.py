@@ -83,6 +83,82 @@ class Parser:
 
         return " ".join(decl)
 
+    def tokenize_in_brackets(self, text_to_parse):
+        line_text = []
+        curr_text = []
+        idx = 0
+        while (idx < len(text_to_parse)):
+            char_tok = text_to_parse[idx]
+            if char_tok in Constants.WHITESPACE:
+                if len(curr_text) != 0:
+                    line_text.append("".join(curr_text))
+                    curr_text = []
+                    self.idx += 1
+                    continue
+
+            elif char_tok in Constants.LOGICAL_OPERATORS:
+                if len(curr_text) != 0:
+                    line_text.append("".join(curr_text))
+                    curr_text = []
+
+                while (text_to_parse[idx] in Constants.LOGICAL_OPERATORS):
+                    curr_text += text_to_parse[idx]
+                    self.idx += 1
+
+                line_text.append("".join(curr_text))
+                curr_text = []
+
+            else:
+                curr_text += char_tok
+                self.idx += 1
+
+
+        return line_text
+
+    def determine_type(self, text_to_parse):
+        if text_to_parse[0] == '"' and text_to_parse[len(text_to_parse) -1] == '"':
+            return Constants.STRING_TYPE
+        elif text_to_parse[0] == "'" and text_to_parse[len(text_to_parse) - 1] == "'":
+            return Constants.CHAR_TYPE
+        else:
+            return Constants.NUMBER_TYPE
+
+        # Determine type
+        # Once type is determined checks can be performed to determine if the type is valid
+
+
+
+    def parse_boolean(self, text_to_parse, scope):
+        if text_to_parse[0] != '(':
+            print("Expected a '(' at start of boolean statement")
+            exit()
+        if text_to_parse[len(text_to_parse) - 1] != ')':
+            print("Expected a ')' at the end of the boolean statement")
+            exit()
+
+        tokenized_text = self.tokenize_in_brackets(text_to_parse[1:len(text_to_parse) - 1])
+
+        for i in range(0, len(tokenized_text), 3):
+            first_term = tokenized_text[i]
+            equality_operator = tokenized_text[i+1]
+            second_term = tokenized_text[i+2]
+            if first_term in scope.variables:
+                first_var = scope.variables.type
+            else:
+                self.determine_type(first_term)
+
+
+
+
+
+
+
+
+
+
+    def parse_if_statement(self, text_to_parse, scope):
+        pass
+
 
     def parse_from_loop(self, variable_name, text_to_parse, scope):
         self.check_valid_variable_name(variable_name)
@@ -424,7 +500,6 @@ class Parser:
                 self.idx += 1
                 self.tokenize_by_block(new_scope.body)
                 tokens.append(new_scope)
-                
 
            
             elif char_tok == "}":
@@ -502,15 +577,6 @@ class Parser:
                     self.translate_tokens(i.body, new_scope)
 
                     
-
-
-
-
-
-
-
-
-
 file_name = f"{sys.argv[1]}.x"        
 parser = Parser(file_name)
 parser.tokenize_by_block([])

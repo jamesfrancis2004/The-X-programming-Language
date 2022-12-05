@@ -1,5 +1,3 @@
-
-
 class Scope(object):
     def __init__(self, parameters, global_scope=False):
         self.parameters = parameters
@@ -7,7 +5,8 @@ class Scope(object):
                                 "operation", "struct", 
                                 "char[]",
                                 "char",
-                                "loop"}
+                                "loop", 
+                                "bool"}
         self.variable_conversion = {"char": 8}
         self.built_ins = set(["println"])
 
@@ -17,8 +16,17 @@ class Scope(object):
 
 
     def return_string(self):
-        string = ""
-        for i in self.body:
-            string +=  i.return_string()
+        string = "{\n "
+        if self.global_scope:
+            string = ""
+            for i in self.body:
+                string += i.return_string()
+            
+            return string
+        else:
+            string = "{\n"
+            for i in self.body:
+                string += i.return_string()
 
-        return string
+            return string + "}\n"
+

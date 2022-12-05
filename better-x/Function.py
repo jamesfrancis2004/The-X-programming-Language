@@ -11,7 +11,7 @@ class Function:
         if self.index == 0:
             string =  f"void {self.name}({self.variables[self.index]})"
             self.index += 1 
-            string += f"{{\n {self.scope.return_string()} }}\n"
+            string += f"{self.scope.return_string()}\n"
         else:
             string = f"{self.name}({self.variables[self.index]});\n"
             self.index += 1

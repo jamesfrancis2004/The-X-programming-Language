@@ -1,7 +1,7 @@
 
 
 
-
+WHITESPACE = set(["\n", " ", "\t"])
 
 VALID_VAR_CHARS = set(["a", "b", "c", "d",
                        "e", "f", "g", "h",
@@ -43,3 +43,7 @@ TYPE_CONVERSION =   {"i32": "int",
                     "f64": "double",
                     "char[]": "char*",
                     "char": "char"}
+
+NUMBER_TYPE = 1
+STRING_TYPE = 2
+CHAR_TYPE = 3

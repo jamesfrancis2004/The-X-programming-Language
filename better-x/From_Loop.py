@@ -8,6 +8,6 @@ class From_Loop:
         self.scope = scope
 
     def return_string(self):
-        return f"for (int {self.variable_name} = {self.start}; {self.variable_name} < {self.end}; {self.variable_name} += {self.step}) {{\n {self.scope.return_string()} }}\n"
+        return f"for (int {self.variable_name} = {self.start}; {self.variable_name} < {self.end}; {self.variable_name} += {self.step}) {self.scope.return_string()}\n"
 
 
