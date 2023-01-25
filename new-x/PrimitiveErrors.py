@@ -1,7 +1,6 @@
 import Errors
 
 class PrimitiveErrors:
-
     def expected_equals(self, split_lines, line_count):
         Errors.line_error(split_lines[line_count], line_count)
         Errors.println("Expected a valid variable assigner when defining variable")
@@ -21,6 +20,12 @@ class PrimitiveErrors:
         Errors.line_error(split_lines[line_count], line_count)
         Errors.println("Nothing was defined when defining variable")
         Errors.println("")
+
+    def bad_type(self, split_lines, line_count, type1, type2):
+        Errors.line_error(split_lines[line_count], line_count)
+        Errors.println(f"Type {type1} is incompatible with Type {type2}")
+        Errors.println("")
+
 
 
     def skip_to_end(self, tokenized_text, pos, line_count):

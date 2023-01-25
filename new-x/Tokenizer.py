@@ -1,10 +1,5 @@
 import Errors
-import time
 import Constants
-import Parser
-import sys
-import os
-
 
 class Tokenizer:
     def __init__(self):
@@ -14,7 +9,7 @@ class Tokenizer:
         self.line_count = 0
 
 
-    def line_error(self, pos):
+    def line_error(self, text, pos):
             if self.line_count == 0:
                 start_line = 0
             else:
@@ -62,7 +57,7 @@ class Tokenizer:
     def tokenize_brackets(self, text, pos):
         end_pos = self.find_bracket_termination(text, pos+1)
         if (end_pos == -1):
-            start_line, end_line =  self.line_error(pos)
+            start_line, end_line =  self.line_error(text, pos)
             Errors.println("^".rjust(pos - (start_line-1) + 16 + len(str(self.line_count))) + " Unterminated parentheses")
             Errors.println("")
             return end_line
@@ -84,7 +79,7 @@ class Tokenizer:
     def tokenize_quotes(self, text, pos):
         end_pos = self.find_quote_termination(text, pos+1)
         if (end_pos == -1):
-            start_line, end_line = self.line_error(pos)
+            start_line, end_line = self.line_error(text, pos)
             Errors.println("^".rjust(pos - (start_line-1) + 16 + len(str(self.line_count))) + " Unterminated quotes")
             Errors.println("")
             return end_line
@@ -106,9 +101,10 @@ class Tokenizer:
 
 
     def tokenize_text(self, text):
+        self.tokenized_text = []
         curr_text = []
         pos = 0
-        while (pos < len(text) - 1):
+        while (pos < len(text)):
             if (text[pos].isspace()):
                 if (len(curr_text) != 0):
                     self.tokenized_text.append("".join(curr_text))
@@ -147,6 +143,11 @@ class Tokenizer:
             else:
                 curr_text.append(text[pos])
                 pos += 1
+
+        if len(curr_text) != 0:
+            self.tokenized_text.append("".join(curr_text))
+            curr_text.clear()
+
 
 
 

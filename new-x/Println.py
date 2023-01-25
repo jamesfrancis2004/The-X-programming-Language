@@ -2,7 +2,7 @@ import Errors
 
 
 class Println:
-    def __init__(self, valid_variables, builtins):
+    def __init__(self, valid_variables, valid_types, builtins):
         self.valid_variables = valid_variables
         self.builtins = builtins
         self.body = []
@@ -44,7 +44,7 @@ class Println:
 
 
     
-    def parse(self, tokenized_text, split_lines, pos, line_count):
+    def parse(self, tokenized_text, split_lines, pos, line_count, scope_body):
         while (pos < len(tokenized_text)):
             if tokenized_text[pos] == '\n':
                 line_count += 1

@@ -11,10 +11,10 @@ from Scope import Scope
 
 
 class Loop(PrimitiveErrors):
-    def __init__(self, valid_variables, builtins):
+    def __init__(self, valid_variables, valid_types, keywords):
         self.valid_variables = valid_variables
-        self.builtins = builtins
-        self.scope = Scope(self.valid_variables.copy(), Constants.PRIMITIVES, Constants.BUILTINS)
+        self.builtins = keywords
+        self.scope = Scope(self.valid_variables.copy(), valid_types, keywords)
         self.body = []
         self.end = None
         self.start = None
@@ -24,7 +24,6 @@ class Loop(PrimitiveErrors):
         Errors.line_error(split_lines[line_count], line_count)
         Errors.println("Expected a '{' before start of operation body")
         Errors.println("") 
-
  
     def parse_number_loop(self, tokenized_text, split_lines, pos, line_count):
         variable_name = str(tokenized_text[pos])
@@ -49,7 +48,7 @@ class Loop(PrimitiveErrors):
         pos, line_count = super().skip_lines(tokenized_text, pos+1, line_count)
         return self.scope.parse(tokenized_text, split_lines, pos, line_count)
 
-    def parse(self, tokenized_text, split_lines, pos, line_count):
+    def parse(self, tokenized_text, split_lines, pos, line_count, scope_body):
         try:
             idx = tokenized_text.index('{', pos)
             to_match = " ".join(tokenized_text[pos:idx]).replace("\n", "")

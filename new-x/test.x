@@ -1,30 +1,30 @@
 
 
 
-class Thing {
-  i32 number = 100;
-}
 
-class OtherThing {
-  i32 number = 1000;
-  Thing thing = new Thing;
-}
+class Square {
+  i32 width = 100;
+  i32 height = 50;
 
-operation print_hello() {
-  println "Hello, World!";
 }
 
 
-operation main() {
-  i32 sum = 0; 
-  loop i from 1 to 1000 {
-    sum += i;
-  }
-  println "The sum is " sum;
-  OtherThing thing = new OtherThing;
-  sum += thing.thing.number;
-  println "The sum is " sum;
+class Cube {
+  i32 depth = 5;
+  Square square = new Square;
+}
 
-  print_hello();
+
+
+op change_cube_depth(Cube cube) {
+  cube.depth = 100;
+}
+
+op main() -> i32 {
+  Cube cube = new Cube;
+  change_cube_depth(cube);
+  i32 depth = cube.depth;
+  println "the cube's new depth is " depth;
+
 
 }

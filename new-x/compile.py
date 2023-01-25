@@ -25,7 +25,7 @@ if __name__ == "__main__":
         exit(0)
     else:
         fp = open("test.c", "w+")
-        print("#include <stdio.h>\n#include<stdlib.h>\n" + parser.return_converted_code(), file=fp)
+        print("#include <stdio.h>\n#include <stdlib.h>\n#include <stdbool.h>\n" + parser.return_converted_code(), file=fp)
         fp.close()
         os.system("gcc -o test test.c -O2")
     

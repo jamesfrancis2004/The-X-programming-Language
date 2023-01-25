@@ -14,15 +14,18 @@ class i32(PrimitiveErrors):
         self.type = "int"
         self.print_type = "%d"
 
+    def remove_identifier(self):
+        self.linked_list[0].pop(0)
+
     def bad_type(self, split_lines, line_count, name, itype):
         Errors.line_error(split_lines[line_count], line_count)
         Errors.printbold(name)
         Errors.println(f" of type \"{itype}\" does not support operation with type i32")
         Errors.println("")
 
-    def parse_inline(self, tokenized_text, split_lines, pos, line_count, string=""):
-        string += tokenized_text[pos]
-        return string, pos+1, line_count, self
+    def parse_inline(self, tokenized_text, split_lines, pos, line_count, valid_variables):
+        self.linked_list.append([tokenized_text[pos]])
+        return pos+1, line_count, self
 
     def parse_body(self, tokenized_text, split_lines, pos, line_count, body):
         allowed_before_digit = set(["+", "-"])
@@ -63,16 +66,21 @@ class i32(PrimitiveErrors):
                     pos += 1
 
                 elif tokenized_text[pos] in self.valid_variables:
-                    string, pos, line_count, variable = self.valid_variables[tokenized_text[pos]].parse_inline(tokenized_text,split_lines,
-                                                                                                                pos,
-                                                                                                                line_count)
+                    inline_variable = self.valid_variables[tokenized_text[pos]]
+                    pos, line_count, variable = inline_variable.parse_inline(tokenized_text,split_lines,
+                                                                             pos,
+                                                                             line_count,
+                                                                             self.valid_variables)
 
                     if not isinstance(variable, i32):
-                        self.bad_type(split_lines, line_count, string, str(variable))
+                        self.bad_type(split_lines, line_count, variable.type, str(variable))
                         return super().skip_to_end(tokenized_text, pos, line_count)
-
+                    
                     expect_symbol = True
-                    body.append(string)
+                    body.append(inline_variable)
+                    print(inline_variable)
+
+                    # Needs improving here
 
                 else:
                     super().bad_symbol(split_lines, line_count)
@@ -84,7 +92,8 @@ class i32(PrimitiveErrors):
         body = []
         name = tokenized_text[pos]
         if len(self.linked_list) == 0:
-            body.append("int " + name)
+            body.append("int ")
+            body.append(name)
         else:
             body.append(name)
 
@@ -112,15 +121,18 @@ class i32(PrimitiveErrors):
 
         return self.parse_body(tokenized_text, split_lines, pos, line_count, body)
 
-    def reparse(self, tokenized_text, split_lines, pos, line_count):
+    def reparse(self, tokenized_text, split_lines, pos, line_count, valid_variables):
         return self.parse(tokenized_text, split_lines, pos, line_count)
 
+    def return_string(self):
+        string = ""
+        for i in self.linked_list[self.index]:
+            if isinstance(i, str):
+                string += i
+            else:
+                string += i.return_string()
 
-    def return_string(self, no_type=False):
-        if no_type and self.index == 0:
-            self.linked_list[0][0] = self.linked_list[0][0][4:]
-        
-        string = "".join(self.linked_list[self.index])
+
         self.index += 1
         return string
 

@@ -1,27 +1,33 @@
 #include <stdio.h>
-#include<stdlib.h>
-struct Thing {
-int number;
+#include <stdlib.h>
+#include <stdbool.h>
+struct Square {
+int width;
+int height;
 };
-struct OtherThing {
-int number;
-struct Thing*  thing;
+struct Square*  create_Square() {
+ struct Square*  temp_value = malloc(sizeof(struct Square* ));
+temp_value->width=100;
+temp_value->height=50;
+return temp_value;
+}
+struct Cube {
+int depth;
+struct Square*  square;
 };
-void print_hello(){
-printf("Hello, World!\n");
+struct Cube*  create_Cube() {
+ struct Cube*  temp_value = malloc(sizeof(struct Cube* ));
+temp_value->depth=5;
+temp_value->square=create_Square();
+return temp_value;
 }
-void main(){
-int sum=0;
-for (int i = 1;i<1000;++i){
-sum+=i;
+void change_cube_depth(struct Cube*  cube){
+cube->depth=100;
 }
-printf("The sum is %d\n", sum);
-struct OtherThing*  thing=malloc(sizeof(struct OtherThing));
-thing->number=1000;
-thing->thing=malloc(sizeof(struct Thing));
-thing->thing->number=100;
-sum+=thing->thing->number;
-printf("The sum is %d\n", sum);
-print_hello();
+int main(){
+struct Cube* cube=create_Cube();
+change_cube_depth(cube);
+int depth=cube->depth;
+printf("the cube's new depth is %d\n", depth);
 }
 
