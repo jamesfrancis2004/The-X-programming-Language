@@ -15,6 +15,7 @@ class Scope:
 
             elif tokenized_text[pos] == "}":
                 return pos+1, line_count, True
+                
 
             elif tokenized_text[pos] in self.valid_types:
                 new_object = self.valid_types[tokenized_text[pos]](self.valid_variables,
@@ -43,8 +44,6 @@ class Scope:
                 if valid: 
                     self.body.append(defined_variable)
                 
-
-
 
             else:
                 pos += 1

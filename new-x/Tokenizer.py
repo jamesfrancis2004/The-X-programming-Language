@@ -131,6 +131,17 @@ class Tokenizer:
 
                 pos = self.tokenize_quotes(text, pos)
 
+            elif (text[pos] == '#'):
+                if (len(curr_text) != 0):
+                    self.tokenized_text.append("".join(curr_text))
+                    curr_text.clear()
+
+                try:
+                    pos = text.index('\n', pos)
+
+                except ValueError:
+                    pos = len(text)
+
             elif (text[pos] in Constants.SYMBOLS):
                 if (len(curr_text) != 0):
                     self.tokenized_text.append("".join(curr_text))
@@ -138,7 +149,6 @@ class Tokenizer:
 
                 symbolic_text, pos = self.tokenize_symbol(text, pos)
                 self.tokenized_text.append(symbolic_text)
-
 
             else:
                 curr_text.append(text[pos])

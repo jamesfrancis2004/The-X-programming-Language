@@ -43,35 +43,44 @@ class Inline_Class(PrimitiveErrors):
         else:
             body.append(f"{self.name}")
             self.linked_list.append(body)
-            return pos+1, line_count, self
+            return pos, line_count, self
     
     def parse_body(self, tokenized_text, split_lines, pos, line_count, body):
         if tokenized_text[pos] == "new":
-            pos += 1
+            pos, line_count = super().skip_lines(tokenized_text, pos+1, line_count)
             if tokenized_text[pos] == self.keyword:
                 body.append(f"create_{self.keyword}()")
             else:
                 super().bad_symbol(tokenized_text, line_count)
                 return super().skip_to_end(tokenized_text, pos, line_count)
 
+            pos, line_count = super().skip_lines(tokenized_text, pos+1, line_count)
+
         elif tokenized_text[pos] in self.valid_variables:
-            if self.valid_variables[tokenized_text[pos]].type == self.type:
-                body.append(tokenized_text[pos])
-            else:
-                super().bad_type(split_lines, line_count,
-                                 self.valid_variables[tokenized_text[pos]].keyword,
-                                 self.keyword)
+            inline_variable = self.valid_variables[tokenized_text[pos]]
+            pos, line_count, variable = inline_variable.parse_inline(tokenized_text,split_lines,
+                                                                             pos,
+                                                                             line_count,
+                                                                             self.valid_variables)
+            if not isinstance(variable, Inline_Class):
+                self.bad_type(split_lines, line_count, variable.type, str(variable))
                 return super().skip_to_end(tokenized_text, pos, line_count)
+
+            body.append(inline_variable)
+                    
+
                 
         else:
             super().bad_symbol(tokenized_text, line_count)
             return super().skip_to_end(tokenized_text, pos, line_count)
-            
-        pos, line_count = super().skip_lines(tokenized_text, pos+1, line_count)
+
+
 
         if tokenized_text[pos] != ';':
+            print(tokenized_text[pos-1:pos+5])
             super().bad_symbol(tokenized_text, line_count)
             return super().skip_to_end(tokenized_text, pos, line_count)
+
         body.append(';\n')
         self.linked_list.append(body)
 

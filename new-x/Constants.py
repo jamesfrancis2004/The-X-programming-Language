@@ -16,7 +16,8 @@ TERMINATING_CHARACTERS = set([';', '}'])
 
 SYMBOLS = set(["{", "}", ";", ",",
                "+", "-", "*", "/",
-               ">", "=", "<", "."])
+               ">", "=", "<", ".",
+               "%", "&"])
 
 
 VALID_GLOBAL_KEYWORDS = {"op": Operation,

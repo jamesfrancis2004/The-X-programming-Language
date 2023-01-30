@@ -1,30 +1,43 @@
 
-
-
-
 class Square {
-  i32 width = 100;
-  i32 height = 50;
-
+  i32 width = 5;
+  i32 height = 10;
 }
 
 
-class Cube {
-  i32 depth = 5;
+op build_square(i32 height, i32 width) -> Square {
   Square square = new Square;
+
+  square.height = height;
+  square.width = width;
+
+  return square;
+
+}
+
+op power(i32 x, i32 n) -> i32 {
+  if n == 0 {
+    return 1;
+  }
+
+  if n & 1 == 1 {
+    return x * power(x, n/2) * power(x, n/2);
+  }
+
+  return power(x, n/2) * power(x, n/2);
+
 }
 
 
-
-op change_cube_depth(Cube cube) {
-  cube.depth = 100;
-}
 
 op main() -> i32 {
-  Cube cube = new Cube;
-  change_cube_depth(cube);
-  i32 depth = cube.depth;
-  println "the cube's new depth is " depth;
+  i32 number = power(2, 28); # Power takes two numbers and returns the exponent
+  println "2^28 is " number;
+  Square square = build_square(10, 20);
+  i32 width = square.width;
+  i32 height = square.height;
 
-
+  println "The square's width should be 20 and is " width;
+  println "The square's height should be 10 and is " height;
+  
 }

@@ -7,27 +7,32 @@ int height;
 };
 struct Square*  create_Square() {
  struct Square*  temp_value = malloc(sizeof(struct Square* ));
-temp_value->width=100;
-temp_value->height=50;
+temp_value->width=5;
+temp_value->height=10;
 return temp_value;
 }
-struct Cube {
-int depth;
-struct Square*  square;
-};
-struct Cube*  create_Cube() {
- struct Cube*  temp_value = malloc(sizeof(struct Cube* ));
-temp_value->depth=5;
-temp_value->square=create_Square();
-return temp_value;
+struct Square*  build_square(int height, int width){
+struct Square* square=create_Square();
+square->height=height;
+square->width=width;
+return square;
 }
-void change_cube_depth(struct Cube*  cube){
-cube->depth=100;
+int power(int x, int n){
+if (n==0) {
+return 1;
+}
+if (n&1==1) {
+return x*power(x,n/2)*power(x,n/2);
+}
+return power(x,n/2)*power(x,n/2);
 }
 int main(){
-struct Cube* cube=create_Cube();
-change_cube_depth(cube);
-int depth=cube->depth;
-printf("the cube's new depth is %d\n", depth);
+int number=power(2,28);
+printf("2^28 is %d\n", number);
+struct Square* square=build_square(10,20);
+int width=square->width;
+int height=square->height;
+printf("The square's width should be 20 and is %d\n", width);
+printf("The square's height should be 10 and is %d\n", height);
 }
 

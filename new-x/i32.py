@@ -7,6 +7,7 @@ import collections
 
 class i32(PrimitiveErrors):
     def __init__(self, valid_variables, builtins):
+        self.name = ""
         self.valid_variables = valid_variables
         self.builtins = builtins 
         self.linked_list = collections.deque()
@@ -66,19 +67,23 @@ class i32(PrimitiveErrors):
                     pos += 1
 
                 elif tokenized_text[pos] in self.valid_variables:
-                    inline_variable = self.valid_variables[tokenized_text[pos]]
-                    pos, line_count, variable = inline_variable.parse_inline(tokenized_text,split_lines,
-                                                                             pos,
-                                                                             line_count,
-                                                                             self.valid_variables)
+                    if tokenized_text[pos] == self.name:
+                        body.append(self.name)
+                        expect_symbol = True
+                        pos += 1
+                    else:
+                        inline_variable = self.valid_variables[tokenized_text[pos]]
+                        pos, line_count, variable = inline_variable.parse_inline(tokenized_text,split_lines,
+                                                                                 pos,
+                                                                                 line_count,
+                                                                                 self.valid_variables)
 
-                    if not isinstance(variable, i32):
-                        self.bad_type(split_lines, line_count, variable.type, str(variable))
-                        return super().skip_to_end(tokenized_text, pos, line_count)
-                    
-                    expect_symbol = True
-                    body.append(inline_variable)
-                    print(inline_variable)
+                        if not isinstance(variable, i32):
+                            self.bad_type(split_lines, line_count, variable.type, str(variable))
+                            return super().skip_to_end(tokenized_text, pos, line_count)
+                        
+                        expect_symbol = True
+                        body.append(inline_variable)
 
                     # Needs improving here
 

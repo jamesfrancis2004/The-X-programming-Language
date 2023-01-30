@@ -37,7 +37,7 @@ class GlobalScope:
 
 
             elif tokenized_text[pos] in self.keywords:
-                new_object = self.keywords[tokenized_text[pos]](self.valid_variables.copy(),
+                new_object = self.keywords[tokenized_text[pos]](self.valid_variables,
                                                                 self.valid_types,
                                                                 Constants.BUILTINS)
 
@@ -46,8 +46,7 @@ class GlobalScope:
 
                 if valid:
                     self.body.append(new_object)
-                    if not isinstance(new_object, Class):
-                        self.valid_variables.update({new_object.name : new_object})
+
 
 
             else:

@@ -4,10 +4,12 @@ import unittest
 import Constants
 from Scope import Scope
 from Return import Return
+from Inline_Operation import Inline_Operation
 from PrimitiveErrors import PrimitiveErrors
+from Parsing_Functions import Parsing_Functions
 
 
-class Operation(PrimitiveErrors):
+class Operation(PrimitiveErrors, Parsing_Functions):
     def __init__(self, valid_variables, valid_types, keywords):
         self.scope = Scope(valid_variables, valid_types, keywords)
         self.parameters = []
@@ -64,6 +66,7 @@ class Operation(PrimitiveErrors):
                     new_object.linked_list.append([f"{new_object.type} {new_object.name}"])
                     self.parameters.append(new_object)
                     self.scope.valid_variables.update({new_object.name : new_object})
+
             return True
 
         # Checks a function for its parameter list
@@ -87,6 +90,7 @@ class Operation(PrimitiveErrors):
         self.type = return_object.type
         return_object = Return(return_object)
         self.scope.keywords.update({"return": return_object.initiate_class})
+        return True
 
     def expected_curly_brackets(self, split_lines, line_count):
         Errors.line_error(split_lines[line_count], line_count)
@@ -111,31 +115,43 @@ class Operation(PrimitiveErrors):
             return self.skip_to_end(tokenized_text, split_lines, pos, line_count)
 
         self.name = name
-        self.scope.valid_variables.update({self.name : self})
-        pos += 1 
+        #self.scope.valid_variables.update({self.name : self})
+        pos, line_count = super().skip_lines(tokenized_text, pos+1, line_count)
 
         if (not self.parse_parameters(tokenized_text[pos], split_lines, line_count)):
             return self.skip_to_end(tokenized_text, split_lines, pos, line_count)
-
-        pos += 1
+        
+        pos, line_count = super().skip_lines(tokenized_text, pos+1, line_count)
 
         if tokenized_text[pos] == "->":
             pos, line_count = super().skip_lines(tokenized_text, pos+1, line_count)
             if not self.get_return_type(tokenized_text[pos], split_lines, line_count):
                 return self.skip_to_end(tokenized_text, split_lines, pos, line_count)
 
-
         elif tokenized_text[pos] == "{":
             self.return_type = None
+            self.scope.valid_variables.update({self.name : Inline_Operation(
+                self.name,
+                self.scope.valid_variables,
+                self.scope.valid_types,
+                self.return_type,
+                self.parameters,
+                )})
             return self.scope.parse(tokenized_text, split_lines, pos+1, line_count)
 
         else:
             self.expected_curly_brackets(split_lines, line_count)
             return self.scope.parse(tokenized_text, split_lines, pos+1, line_count)
-
-        pos += 1
-
+        
+        pos, line_count = super().skip_lines(tokenized_text, pos+1, line_count)
         if tokenized_text[pos] == "{":
+            self.scope.valid_variables.update({self.name : Inline_Operation(
+                self.name,
+                self.scope.valid_variables,
+                self.scope.valid_types,
+                self.return_type,
+                self.parameters,
+                )})
             return self.scope.parse(tokenized_text, split_lines, pos+1, line_count)
 
         else:            
@@ -194,7 +210,7 @@ class Operation(PrimitiveErrors):
         body.append(f"{self.name}")
         pos += 1
         if not self.reparse_parameters(tokenized_text[pos], split_lines, line_count, valid_variables, body):
-            return self.skip_to_end(tokenized_text, split_lines, pos, line_count)
+            return super().skip_to_end(tokenized_text, pos, line_count)
 
          
         self.string_return_list.append(body + [';\n'])
@@ -209,29 +225,16 @@ class Operation(PrimitiveErrors):
 
     def return_string(self):
         string = ""
-        if self.returned_function == False:
-            self.returned_function = True
-            in_code_name = self.name
-            string = ""
-            string += (self.type + " " + str(in_code_name))
-            string += "("
-            for idx, i in enumerate(self.parameters):
-                if idx == 0:
-                    string += i.return_string()
-                else:
-                    string += f", {i.return_string()}"
+        string += (self.type + " " + str(self.name))
+        string += "("
+        for idx, i in enumerate(self.parameters):
+            if idx == 0:
+                string += i.return_string()
+            else:
+                string += f", {i.return_string()}"
 
-            string += ")"
-            string += self.scope.return_string()
-        else:
-            string = ""
-            for i in self.string_return_list[self.index]:
-                if isinstance(i, str):
-                    string += i
-                else:
-                    string += i.return_string()
-
-            self.index += 1
+        string += ")"
+        string += self.scope.return_string()
 
         return string
     
